@@ -1,0 +1,596 @@
+diff --git a/app/globals.css b/app/globals.css
+index 156a369..0e853bd 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -1,9 +1,11 @@
+ @import "tailwindcss";
+ 
+ :root {
+-  color-scheme: dark;
+-  --background: #09090b;
+-  --foreground: #fafafa;
++  color-scheme: light;
++  --background: #f8fafc;
++  --foreground: #0f172a;
++  --muted: #475569;
++  --line: #e2e8f0;
+ }
+ 
+ * {
+@@ -16,36 +18,25 @@ html {
+ 
+ body {
+   margin: 0;
+-  background:
+-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.2), transparent 32rem),
+-    radial-gradient(circle at top right, rgba(139, 92, 246, 0.16), transparent 32rem),
+-    var(--background);
++  background: var(--background);
+   color: var(--foreground);
+   font-family: Arial, Helvetica, sans-serif;
++  text-rendering: optimizeLegibility;
++  -webkit-font-smoothing: antialiased;
+ }
+ 
+ ::selection {
+-  background: rgba(96, 165, 250, 0.35);
+-}
+-
+-.noise {
+-  position: fixed;
+-  inset: 0;
+-  pointer-events: none;
+-  opacity: 0.04;
+-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
++  background: rgba(37, 99, 235, 0.16);
+ }
+ 
+ .gradient-text {
+-  background: linear-gradient(120deg, #ffffff, #bfdbfe 45%, #ddd6fe);
+-  -webkit-background-clip: text;
+-  background-clip: text;
+-  color: transparent;
++  color: #0f172a;
+ }
+ 
+ .card-grid {
+-  background-image:
+-    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+-    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+-  background-size: 42px 42px;
++  background: #ffffff;
++}
++
++.noise {
++  display: none;
+ }
+diff --git a/app/not-found.tsx b/app/not-found.tsx
+index 826fda0..de87123 100644
+--- a/app/not-found.tsx
++++ b/app/not-found.tsx
+@@ -4,10 +4,10 @@ export default function NotFound() {
+   return (
+     <main className="grid min-h-screen place-items-center px-5 text-center">
+       <div>
+-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">404</p>
+-        <h1 className="mt-4 text-4xl font-black text-white">페이지를 찾을 수 없습니다</h1>
+-        <p className="mt-4 text-zinc-400">요청한 프로젝트 페이지가 존재하지 않습니다.</p>
+-        <Link href="/" className="mt-8 inline-flex rounded-full bg-white px-5 py-3 text-sm font-bold text-zinc-950">
++        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">404</p>
++        <h1 className="mt-4 text-4xl font-black text-slate-950">페이지를 찾을 수 없습니다</h1>
++        <p className="mt-4 text-slate-500">요청한 프로젝트 페이지가 존재하지 않습니다.</p>
++        <Link href="/" className="mt-8 inline-flex rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white">
+           홈으로 돌아가기
+         </Link>
+       </div>
+diff --git a/app/page.tsx b/app/page.tsx
+index 40863cd..894128b 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -17,7 +17,7 @@ export default function Home() {
+     <main id="top" className="min-h-screen overflow-hidden">
+       <Header />
+ 
+-      <section className="relative mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-10">
++      <section className="relative mx-auto grid w-full max-w-6xl items-start gap-10 px-5 py-20 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-10">
+         <div>
+           <div className="mb-6 flex flex-wrap gap-2">
+             {profile.keywords.map((keyword) => (
+@@ -27,11 +27,11 @@ export default function Home() {
+             ))}
+           </div>
+ 
+-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-blue-300">{profile.title}</p>
+-          <h1 className="gradient-text text-5xl font-black leading-tight tracking-tight sm:text-6xl lg:text-7xl">
++          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-blue-600">{profile.title}</p>
++          <h1 className="gradient-text text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+             {profile.headline}
+           </h1>
+-          <p className="mt-7 max-w-2xl text-lg leading-9 text-zinc-300">{profile.description}</p>
++          <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600">{profile.description}</p>
+ 
+           <div className="mt-10 flex flex-wrap gap-3">
+             <LinkButton href="#projects">프로젝트 보기</LinkButton>
+@@ -43,31 +43,31 @@ export default function Home() {
+             </LinkButton>
+           </div>
+ 
+-          <dl className="mt-12 grid gap-4 sm:grid-cols-3">
++          <dl className="mt-10 grid gap-4 sm:grid-cols-3">
+             {stats.map((item) => (
+-              <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+-                <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">{item.label}</dt>
+-                <dd className="mt-3 text-xl font-black text-white">{item.value}</dd>
++              <div key={item.label} className="rounded-2xl border border-slate-200 bg-white p-5">
++                <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{item.label}</dt>
++                <dd className="mt-3 text-xl font-black text-slate-950">{item.value}</dd>
+               </div>
+             ))}
+           </dl>
+         </div>
+ 
+         <div className="relative">
+-          <div className="absolute inset-0 rounded-[2.5rem] bg-blue-500/20 blur-3xl" />
+-          <div className="card-grid relative overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-950/80 p-6 shadow-2xl shadow-blue-950/20">
+-            <div className="mb-8 flex items-center gap-2">
++          <div className="hidden" />
++          <div className="card-grid relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
++            <div className="mb-6 flex items-center gap-2">
+               <span className="h-3 w-3 rounded-full bg-red-400" />
+               <span className="h-3 w-3 rounded-full bg-yellow-400" />
+               <span className="h-3 w-3 rounded-full bg-green-400" />
+             </div>
+ 
+-            <div className="rounded-2xl border border-white/10 bg-black/30 p-5 font-mono text-sm leading-8 text-zinc-300">
+-              <p><span className="text-blue-300">const</span> developer = &#123;</p>
+-              <p className="pl-4">name: <span className="text-emerald-300">&quot;{profile.name}&quot;</span>,</p>
+-              <p className="pl-4">focus: <span className="text-emerald-300">&quot;문제 해결형 웹 서비스&quot;</span>,</p>
+-              <p className="pl-4">projects: [<span className="text-emerald-300">&quot;DonWorry&quot;</span>, <span className="text-emerald-300">&quot;축제로&quot;</span>],</p>
+-              <p className="pl-4">strength: <span className="text-emerald-300">&quot;기능 구현 + 협업 + 문서화&quot;</span>,</p>
++            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 font-mono text-sm leading-8 text-slate-600">
++              <p><span className="text-blue-600">const</span> developer = &#123;</p>
++              <p className="pl-4">name: <span className="text-emerald-600">&quot;{profile.name}&quot;</span>,</p>
++              <p className="pl-4">focus: <span className="text-emerald-600">&quot;문제 해결형 웹 서비스&quot;</span>,</p>
++              <p className="pl-4">projects: [<span className="text-emerald-600">&quot;DonWorry&quot;</span>, <span className="text-emerald-600">&quot;축제로&quot;</span>],</p>
++              <p className="pl-4">strength: <span className="text-emerald-600">&quot;기능 구현 + 협업 + 문서화&quot;</span>,</p>
+               <p>&#125;;</p>
+             </div>
+ 
+@@ -76,11 +76,11 @@ export default function Home() {
+                 <a
+                   key={project.slug}
+                   href={`/projects/${project.slug}`}
+-                  className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:border-blue-300/40 hover:bg-blue-400/10"
++                  className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:bg-slate-50"
+                 >
+-                  <p className="text-sm font-semibold text-blue-200">{project.label}</p>
+-                  <p className="mt-2 text-xl font-bold text-white">{project.name}</p>
+-                  <p className="mt-2 text-sm text-zinc-400">{project.subtitle}</p>
++                  <p className="text-sm font-semibold text-blue-600">{project.label}</p>
++                  <p className="mt-2 text-xl font-bold text-slate-950">{project.name}</p>
++                  <p className="mt-2 text-sm text-slate-500">{project.subtitle}</p>
+                 </a>
+               ))}
+             </div>
+@@ -95,9 +95,9 @@ export default function Home() {
+         description="공공기관 행정 업무와 해외 근무 경험을 바탕으로 책임감, 커뮤니케이션, 문제 해결력을 쌓아왔습니다. 이후 자바 풀스택 및 생성형 AI 서비스 개발 과정을 수료하며 Java, Spring, Oracle, JSP, React, Spring Boot 기반 웹 서비스를 직접 기획하고 구현했습니다."
+       >
+         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
+-            <h3 className="text-2xl font-bold text-white">홍설아</h3>
+-            <p className="mt-4 leading-8 text-zinc-400">
++          <div className="rounded-3xl border border-slate-200 bg-white p-7">
++            <h3 className="text-2xl font-bold text-slate-950">홍설아</h3>
++            <p className="mt-4 leading-8 text-slate-500">
+               단순히 화면을 만드는 것보다 사용자가 어떤 문제를 겪고 있는지 이해하고, 그 문제를 안정적인 서비스 흐름과 기능으로 연결하는 과정에 관심이 많습니다.
+             </p>
+             <div className="mt-6 flex flex-wrap gap-2">
+@@ -109,9 +109,9 @@ export default function Home() {
+           </div>
+           <div className="grid gap-4 sm:grid-cols-2">
+             {strengths.map((strength) => (
+-              <article key={strength.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+-                <h3 className="text-lg font-bold text-white">{strength.title}</h3>
+-                <p className="mt-4 text-sm leading-7 text-zinc-400">{strength.description}</p>
++              <article key={strength.title} className="rounded-3xl border border-slate-200 bg-white p-6">
++                <h3 className="text-lg font-bold text-slate-950">{strength.title}</h3>
++                <p className="mt-4 text-sm leading-7 text-slate-500">{strength.description}</p>
+               </article>
+             ))}
+           </div>
+@@ -126,9 +126,9 @@ export default function Home() {
+       >
+         <div className="grid gap-5 lg:grid-cols-2">
+           {skills.map((skill) => (
+-            <article key={skill.category} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+-              <h3 className="text-xl font-bold text-white">{skill.category}</h3>
+-              <p className="mt-3 text-sm leading-7 text-zinc-400">{skill.description}</p>
++            <article key={skill.category} className="rounded-3xl border border-slate-200 bg-white p-6">
++              <h3 className="text-xl font-bold text-slate-950">{skill.category}</h3>
++              <p className="mt-3 text-sm leading-7 text-slate-500">{skill.description}</p>
+               <div className="mt-5 flex flex-wrap gap-2">
+                 {skill.items.map((item) => (
+                   <Badge key={item}>{item}</Badge>
+@@ -160,9 +160,9 @@ export default function Home() {
+       >
+         <div className="grid gap-5 md:grid-cols-2">
+           {problemSolving.map((item) => (
+-            <article key={item.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+-              <h3 className="text-xl font-bold text-white">{item.title}</h3>
+-              <p className="mt-4 text-sm leading-7 text-zinc-400">{item.description}</p>
++            <article key={item.title} className="rounded-3xl border border-slate-200 bg-white p-6">
++              <h3 className="text-xl font-bold text-slate-950">{item.title}</h3>
++              <p className="mt-4 text-sm leading-7 text-slate-500">{item.description}</p>
+             </article>
+           ))}
+         </div>
+@@ -173,19 +173,19 @@ export default function Home() {
+         eyebrow="Background"
+         title="책임감 있는 업무 경험을 개발 역량으로 확장했습니다"
+       >
+-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 sm:p-9">
+-          <p className="text-base leading-9 text-zinc-300">
++        <div className="rounded-3xl border border-slate-200 bg-white p-7 sm:p-9">
++          <p className="text-base leading-9 text-slate-600">
+             개발자로 전환하기 전, 공공기관에서 예산 관리, 계약, 기업지원사업, 공적일자리사업을 담당하며 일정 관리와 문서화, 이해관계자와의 커뮤니케이션을 경험했습니다. 짧은 기간 안에 여러 업무를 처리해야 하는 환경에서 우선순위를 정리하고 관련 부서와 협의하며 문제를 해결하는 태도를 익혔습니다.
+           </p>
+-          <p className="mt-5 text-base leading-9 text-zinc-300">
++          <p className="mt-5 text-base leading-9 text-slate-600">
+             이러한 경험은 개발 프로젝트에서도 요구사항을 정리하고, 팀원과 기능 범위를 조율하며, 사용자 흐름을 기준으로 서비스를 완성하는 데 도움이 되었습니다.
+           </p>
+         </div>
+       </Section>
+ 
+       <Section id="contact" eyebrow="Contact" title="함께 일하며 성장할 수 있는 개발자가 되고 싶습니다">
+-        <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-blue-500/15 to-violet-500/10 p-8 sm:p-10">
+-          <p className="max-w-2xl text-lg leading-9 text-zinc-300">
++        <div className="rounded-2xl border border-slate-200 bg-white p-8 sm:p-10">
++          <p className="max-w-2xl text-lg leading-9 text-slate-600">
+             프로젝트, GitHub, 이력서를 확인하신 뒤 편하게 연락 주세요. 사용자 입장에서 서비스 흐름을 고민하고, 팀과 함께 성장하는 개발자가 되겠습니다.
+           </p>
+           <div className="mt-8 flex flex-wrap gap-3">
+diff --git a/app/projects/[slug]/page.tsx b/app/projects/[slug]/page.tsx
+index 86bf825..f76b329 100644
+--- a/app/projects/[slug]/page.tsx
++++ b/app/projects/[slug]/page.tsx
+@@ -44,27 +44,27 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
+ 
+   return (
+     <main className="min-h-screen">
+-      <div className="border-b border-white/10 bg-zinc-950/75 backdrop-blur-xl">
++      <div className="border-b border-slate-200 bg-white/90 backdrop-blur-xl">
+         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8 lg:px-10">
+-          <Link href="/" className="text-sm font-bold text-white transition hover:text-blue-200">
++          <Link href="/" className="text-sm font-bold text-slate-950 transition hover:text-blue-600">
+             ← Portfolio Home
+           </Link>
+           <div className="flex gap-3">
+-            <a href={project.links.github} target="_blank" rel="noreferrer" className="text-sm font-semibold text-zinc-400 transition hover:text-white">
++            <a href={project.links.github} target="_blank" rel="noreferrer" className="text-sm font-semibold text-slate-500 transition hover:text-slate-950">
+               GitHub
+             </a>
+           </div>
+         </div>
+       </div>
+ 
+-      <section className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-20 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
++      <section className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_0.8fr] lg:px-10">
+         <div>
+           <Badge variant="strong">{project.label}</Badge>
+-          <h1 className="gradient-text mt-6 text-5xl font-black leading-tight tracking-tight sm:text-6xl">
++          <h1 className="gradient-text mt-6 text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+             {project.name}
+           </h1>
+-          <p className="mt-4 text-xl font-semibold text-blue-100">{project.subtitle}</p>
+-          <p className="mt-7 text-lg leading-9 text-zinc-300">{project.summary}</p>
++          <p className="mt-4 text-xl font-semibold text-blue-700">{project.subtitle}</p>
++          <p className="mt-6 text-base leading-8 text-slate-600">{project.summary}</p>
+ 
+           <div className="mt-9 flex flex-wrap gap-3">
+             <LinkButton href={project.links.github} external>
+@@ -76,19 +76,19 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
+           </div>
+         </div>
+ 
+-        <aside className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-7">
++        <aside className="rounded-2xl border border-slate-200 bg-white p-7">
+           <dl className="grid gap-6">
+             <div>
+-              <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Period</dt>
+-              <dd className="mt-2 text-white">{project.period}</dd>
++              <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Period</dt>
++              <dd className="mt-2 text-slate-950">{project.period}</dd>
+             </div>
+             <div>
+-              <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">Team</dt>
+-              <dd className="mt-2 text-white">{project.team}</dd>
++              <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Team</dt>
++              <dd className="mt-2 text-slate-950">{project.team}</dd>
+             </div>
+             <div>
+-              <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">My Role</dt>
+-              <dd className="mt-2 leading-7 text-white">{project.role}</dd>
++              <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">My Role</dt>
++              <dd className="mt-2 leading-7 text-slate-950">{project.role}</dd>
+             </div>
+           </dl>
+           <div className="mt-7 flex flex-wrap gap-2">
+@@ -101,26 +101,26 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
+ 
+       <Section eyebrow="Overview" title="문제 정의와 해결 방향">
+         <div className="grid gap-5 lg:grid-cols-3">
+-          <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+-            <p className="text-sm font-semibold text-blue-200">Problem</p>
+-            <p className="mt-4 text-sm leading-7 text-zinc-400">{project.problem}</p>
++          <article className="rounded-2xl border border-slate-200 bg-white p-6">
++            <p className="text-sm font-semibold text-blue-600">Problem</p>
++            <p className="mt-4 text-sm leading-7 text-slate-500">{project.problem}</p>
+           </article>
+-          <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+-            <p className="text-sm font-semibold text-blue-200">Solution</p>
+-            <p className="mt-4 text-sm leading-7 text-zinc-400">{project.solution}</p>
++          <article className="rounded-2xl border border-slate-200 bg-white p-6">
++            <p className="text-sm font-semibold text-blue-600">Solution</p>
++            <p className="mt-4 text-sm leading-7 text-slate-500">{project.solution}</p>
+           </article>
+-          <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6">
+-            <p className="text-sm font-semibold text-blue-200">Result</p>
+-            <p className="mt-4 text-sm leading-7 text-zinc-400">{project.result}</p>
++          <article className="rounded-2xl border border-slate-200 bg-white p-6">
++            <p className="text-sm font-semibold text-blue-600">Result</p>
++            <p className="mt-4 text-sm leading-7 text-slate-500">{project.result}</p>
+           </article>
+         </div>
+       </Section>
+ 
+       <Section eyebrow="Contribution" title="담당 역할과 기여도">
+-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
++        <div className="rounded-2xl border border-slate-200 bg-white p-7">
+           <ul className="grid gap-4 md:grid-cols-2">
+             {project.contribution.map((item) => (
+-              <li key={item} className="flex gap-3 text-sm leading-7 text-zinc-300">
++              <li key={item} className="flex gap-3 text-sm leading-7 text-slate-600">
+                 <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-blue-300" />
+                 {item}
+               </li>
+@@ -132,8 +132,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
+       <Section eyebrow="Core Features" title="주요 기능 구현 내용">
+         <div className="grid gap-4 md:grid-cols-2">
+           {project.features.map((feature) => (
+-            <article key={feature} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+-              <p className="text-sm leading-7 text-zinc-300">{feature}</p>
++            <article key={feature} className="rounded-2xl border border-slate-200 bg-white p-5">
++              <p className="text-sm leading-7 text-slate-600">{feature}</p>
+             </article>
+           ))}
+         </div>
+@@ -146,24 +146,24 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
+       <Section eyebrow="Troubleshooting" title="문제 원인 분석 및 해결">
+         <div className="grid gap-6">
+           {project.troubleShooting.map((item) => (
+-            <article key={item.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-7">
+-              <h3 className="text-2xl font-bold text-white">{item.title}</h3>
++            <article key={item.title} className="rounded-2xl border border-slate-200 bg-white p-7">
++              <h3 className="text-xl font-semibold text-slate-950">{item.title}</h3>
+               <div className="mt-6 grid gap-4 lg:grid-cols-4">
+-                <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
++                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                   <p className="text-sm font-semibold text-red-200">Issue</p>
+-                  <p className="mt-3 text-sm leading-7 text-zinc-400">{item.issue}</p>
++                  <p className="mt-3 text-sm leading-7 text-slate-500">{item.issue}</p>
+                 </div>
+-                <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
++                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                   <p className="text-sm font-semibold text-yellow-200">Cause</p>
+-                  <p className="mt-3 text-sm leading-7 text-zinc-400">{item.cause}</p>
++                  <p className="mt-3 text-sm leading-7 text-slate-500">{item.cause}</p>
+                 </div>
+-                <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
+-                  <p className="text-sm font-semibold text-blue-200">Solution</p>
+-                  <p className="mt-3 text-sm leading-7 text-zinc-400">{item.solution}</p>
++                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
++                  <p className="text-sm font-semibold text-blue-600">Solution</p>
++                  <p className="mt-3 text-sm leading-7 text-slate-500">{item.solution}</p>
+                 </div>
+-                <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
++                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                   <p className="text-sm font-semibold text-emerald-200">Learned</p>
+-                  <p className="mt-3 text-sm leading-7 text-zinc-400">{item.learned}</p>
++                  <p className="mt-3 text-sm leading-7 text-slate-500">{item.learned}</p>
+                 </div>
+               </div>
+             </article>
+@@ -172,12 +172,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
+       </Section>
+ 
+       <section className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 lg:px-10">
+-        <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-blue-500/15 to-violet-500/10 p-8">
+-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">Next Project</p>
++        <div className="rounded-2xl border border-slate-200 bg-white p-8">
++          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">Next Project</p>
+           <div className="mt-5 flex flex-wrap items-center justify-between gap-6">
+             <div>
+-              <h2 className="text-3xl font-bold text-white">다른 프로젝트도 확인해 보세요</h2>
+-              <p className="mt-3 text-zinc-400">두 프로젝트가 보여주는 역량이 다르도록 구성했습니다.</p>
++              <h2 className="text-2xl font-semibold text-slate-950">다른 프로젝트도 확인해 보세요</h2>
++              <p className="mt-3 text-slate-500">두 프로젝트가 보여주는 역량이 다르도록 구성했습니다.</p>
+             </div>
+             <div className="flex flex-wrap gap-3">
+               {otherProjects.map((item) => (
+diff --git a/components/Badge.tsx b/components/Badge.tsx
+index 5c96fed..6697ca2 100644
+--- a/components/Badge.tsx
++++ b/components/Badge.tsx
+@@ -6,8 +6,8 @@ type BadgeProps = {
+ export default function Badge({ children, variant = "default" }: BadgeProps) {
+   const className =
+     variant === "strong"
+-      ? "rounded-full border border-blue-300/40 bg-blue-400/15 px-3 py-1 text-xs font-semibold text-blue-100"
+-      : "rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-zinc-300";
++      ? "rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700"
++      : "rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600";
+ 
+   return <span className={className}>{children}</span>;
+ }
+diff --git a/components/Flow.tsx b/components/Flow.tsx
+index b880abf..ff9ad98 100644
+--- a/components/Flow.tsx
++++ b/components/Flow.tsx
+@@ -6,11 +6,11 @@ export default function Flow({ items }: FlowProps) {
+   return (
+     <ol className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+       {items.map((item, index) => (
+-        <li key={item} className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+-          <span className="mb-4 grid h-9 w-9 place-items-center rounded-xl bg-blue-400/15 text-sm font-bold text-blue-200">
++        <li key={item} className="relative rounded-2xl border border-slate-200 bg-white p-5">
++          <span className="mb-4 grid h-9 w-9 place-items-center rounded-xl bg-blue-50 text-sm font-bold text-blue-600">
+             {index + 1}
+           </span>
+-          <p className="text-sm leading-7 text-zinc-300">{item}</p>
++          <p className="text-sm leading-7 text-slate-600">{item}</p>
+         </li>
+       ))}
+     </ol>
+diff --git a/components/Footer.tsx b/components/Footer.tsx
+index e04039b..85114f2 100644
+--- a/components/Footer.tsx
++++ b/components/Footer.tsx
+@@ -2,7 +2,7 @@ import { profile } from "@/data/portfolio";
+ 
+ export default function Footer() {
+   return (
+-    <footer className="border-t border-white/10 px-5 py-10 text-center text-sm text-zinc-500 sm:px-8 lg:px-10">
++    <footer className="border-t border-slate-200 px-5 py-10 text-center text-sm text-slate-400 sm:px-8 lg:px-10">
+       <p>© {new Date().getFullYear()} {profile.name}. Built with Next.js.</p>
+     </footer>
+   );
+diff --git a/components/Header.tsx b/components/Header.tsx
+index 2688a2d..6a8b9c0 100644
+--- a/components/Header.tsx
++++ b/components/Header.tsx
+@@ -2,18 +2,18 @@ import { navItems, profile } from "@/data/portfolio";
+ 
+ export default function Header() {
+   return (
+-    <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/75 backdrop-blur-xl">
++    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
+       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8 lg:px-10">
+         <a href="#top" className="group flex items-center gap-3" aria-label="홈으로 이동">
+-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-blue-400 to-violet-500 text-sm font-black text-white shadow-lg shadow-blue-500/20">
++          <span className="grid h-9 w-9 place-items-center rounded-xl bg-slate-950 text-sm font-black text-white">
+             H
+           </span>
+-          <span className="hidden text-sm font-semibold text-white sm:inline">{profile.name}</span>
++          <span className="hidden text-sm font-semibold text-slate-950 sm:inline">{profile.name}</span>
+         </a>
+ 
+         <nav className="hidden items-center gap-6 md:flex" aria-label="주요 메뉴">
+           {navItems.map((item) => (
+-            <a key={item.href} href={item.href} className="text-sm font-medium text-zinc-400 transition hover:text-white">
++            <a key={item.href} href={item.href} className="text-sm font-medium text-slate-500 transition hover:text-slate-950">
+               {item.label}
+             </a>
+           ))}
+@@ -21,7 +21,7 @@ export default function Header() {
+ 
+         <a
+           href={`mailto:${profile.email}`}
+-          className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white transition hover:border-blue-300/40 hover:bg-blue-400/10"
++          className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:border-slate-300 hover:bg-slate-50"
+         >
+           Contact
+         </a>
+diff --git a/components/LinkButton.tsx b/components/LinkButton.tsx
+index 7171778..f8900bc 100644
+--- a/components/LinkButton.tsx
++++ b/components/LinkButton.tsx
+@@ -10,8 +10,8 @@ type LinkButtonProps = {
+ export default function LinkButton({ href, children, variant = "primary", external = false }: LinkButtonProps) {
+   const className =
+     variant === "primary"
+-      ? "rounded-full bg-white px-5 py-3 text-sm font-bold text-zinc-950 transition hover:bg-blue-100"
+-      : "rounded-full border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-bold text-white transition hover:border-blue-300/40 hover:bg-blue-400/10";
++      ? "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
++      : "inline-flex h-11 items-center justify-center rounded-full border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50";
+ 
+   if (external || href.startsWith("mailto:")) {
+     return (
+diff --git a/components/ProjectCard.tsx b/components/ProjectCard.tsx
+index 5f9431f..3b65dfe 100644
+--- a/components/ProjectCard.tsx
++++ b/components/ProjectCard.tsx
+@@ -9,17 +9,16 @@ type ProjectCardProps = {
+ 
+ export default function ProjectCard({ project, index }: ProjectCardProps) {
+   return (
+-    <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl shadow-black/20 transition hover:-translate-y-1 hover:border-blue-300/30 hover:bg-white/[0.06]">
+-      <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-blue-500/10 blur-3xl transition group-hover:bg-violet-500/20" />
+-      <div className="relative">
++    <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-slate-300">
++      <div>
+         <div className="mb-6 flex items-center justify-between gap-4">
+           <Badge variant="strong">{project.label}</Badge>
+-          <span className="text-sm font-semibold text-zinc-500">0{index + 1}</span>
++          <span className="text-sm font-semibold text-slate-400">0{index + 1}</span>
+         </div>
+ 
+-        <h3 className="text-2xl font-bold text-white">{project.name}</h3>
+-        <p className="mt-2 text-sm font-semibold text-blue-200">{project.subtitle}</p>
+-        <p className="mt-5 min-h-24 text-sm leading-7 text-zinc-400">{project.summary}</p>
++        <h3 className="text-2xl font-bold text-slate-950">{project.name}</h3>
++        <p className="mt-2 text-sm font-semibold text-blue-600">{project.subtitle}</p>
++        <p className="mt-4 text-sm leading-7 text-slate-500">{project.summary}</p>
+ 
+         <div className="mt-6 flex flex-wrap gap-2">
+           {project.tech.slice(0, 8).map((tech) => (
+@@ -27,15 +26,15 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
+           ))}
+         </div>
+ 
+-        <div className="mt-8 grid gap-3 text-sm text-zinc-300">
+-          <p><span className="text-zinc-500">Period</span> · {project.period}</p>
+-          <p><span className="text-zinc-500">Role</span> · {project.role}</p>
++        <div className="mt-6 grid gap-2 text-sm text-slate-600">
++          <p><span className="text-slate-400">Period</span> · {project.period}</p>
++          <p><span className="text-slate-400">Role</span> · {project.role}</p>
+         </div>
+ 
+         <div className="mt-8 flex flex-wrap gap-3">
+           <Link
+             href={`/projects/${project.slug}`}
+-            className="rounded-full bg-white px-5 py-3 text-sm font-bold text-zinc-950 transition hover:bg-blue-100"
++            className="inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
+           >
+             자세히 보기
+           </Link>
+@@ -43,7 +42,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
+             href={project.links.github}
+             target="_blank"
+             rel="noreferrer"
+-            className="rounded-full border border-white/10 px-5 py-3 text-sm font-bold text-white transition hover:border-blue-300/40 hover:bg-blue-400/10"
++            className="inline-flex h-11 items-center justify-center rounded-full border border-slate-300 px-5 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+           >
+             GitHub
+           </a>
+diff --git a/components/Section.tsx b/components/Section.tsx
+index 1dc500a..91514fb 100644
+--- a/components/Section.tsx
++++ b/components/Section.tsx
+@@ -8,13 +8,13 @@ type SectionProps = {
+ 
+ export default function Section({ id, eyebrow, title, description, children }: SectionProps) {
+   return (
+-    <section id={id} className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 lg:px-10">
++    <section id={id} className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 lg:px-10">
+       <div className="mb-10 max-w-3xl">
+         {eyebrow ? (
+-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">{eyebrow}</p>
++          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">{eyebrow}</p>
+         ) : null}
+-        <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{title}</h2>
+-        {description ? <p className="mt-4 text-base leading-8 text-zinc-400">{description}</p> : null}
++        <h2 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">{title}</h2>
++        {description ? <p className="mt-4 text-base leading-8 text-slate-500">{description}</p> : null}
+       </div>
+       {children}
+     </section>
