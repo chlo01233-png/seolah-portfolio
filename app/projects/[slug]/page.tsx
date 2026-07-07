@@ -152,6 +152,24 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           {project.links.demoNote ? (
             <p className="mt-4 text-sm leading-7 text-slate-500">{project.links.demoNote}</p>
           ) : null}
+          {project.links.demoAccounts?.length ? (
+            <div className="mt-5 max-w-2xl rounded-3xl border border-blue-100 bg-blue-50/80 p-5">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">Demo Account</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {project.links.demoAccounts.map((account) => (
+                  <div key={account.role} className="rounded-2xl border border-blue-100 bg-white/90 p-4">
+                    <p className="text-sm font-black text-slate-900">{account.role}</p>
+                    <p className="mt-2 text-sm text-slate-600">
+                      ID: <span className="font-bold text-slate-900">{account.id}</span>
+                    </p>
+                    <p className="mt-1 text-sm text-slate-600">
+                      PW: <span className="font-bold text-slate-900">{account.password}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <aside className="card rounded-[2.25rem] p-7 sm:p-8">
@@ -192,17 +210,17 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         description="역할과 구현 기여를 분리해 확인할 수 있도록 구성했습니다."
       >
         <div className="grid gap-6 lg:grid-cols-[0.78fr_1.22fr]">
-          <article className="card self-start rounded-[2rem] bg-slate-950 p-6 text-white sm:p-7">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-300">My Position</p>
-            <h3 className="mt-4 text-2xl font-black tracking-tight">{project.positionTitle}</h3>
-            <p className="mt-4 text-sm leading-7 text-slate-300">{project.positionDescription}</p>
+          <article className="card self-start rounded-[2rem] border border-blue-100 bg-gradient-to-br from-white to-blue-50 p-6 sm:p-7">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-700">My Position</p>
+            <h3 className="mt-4 text-2xl font-black tracking-tight text-slate-950">{project.positionTitle}</h3>
+            <p className="mt-4 text-sm leading-7 text-slate-700">{project.positionDescription}</p>
           </article>
 
           <div className="grid gap-4 md:grid-cols-2">
             {project.contribution.map((item, index) => (
-              <article key={item} className="subtle-card rounded-[1.75rem] p-5">
-                <span className="text-xs font-black text-blue-600">{String(index + 1).padStart(2, "0")}</span>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{item}</p>
+              <article key={item} className="subtle-card rounded-[1.75rem] border border-slate-200/80 bg-white p-5">
+                <span className="text-xs font-black text-blue-700">{String(index + 1).padStart(2, "0")}</span>
+                <p className="mt-3 text-sm leading-7 text-slate-700">{item}</p>
               </article>
             ))}
           </div>

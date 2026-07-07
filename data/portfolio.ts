@@ -3,6 +3,12 @@ export type ProjectRepository = {
   url: string;
 };
 
+export type ProjectDemoAccount = {
+  role: string;
+  id: string;
+  password: string;
+};
+
 export type Project = {
   slug: string;
   name: string;
@@ -33,6 +39,7 @@ export type Project = {
     demo?: string;
     demoLabel?: string;
     demoNote?: string;
+    demoAccounts?: ProjectDemoAccount[];
     detail?: string;
     detailLabel?: string;
   };
@@ -265,6 +272,10 @@ export const projects: Project[] = [
       ],
       demo: "https://festaroute.site/",
       demoLabel: "Live Demo",
+      demoAccounts: [
+        { role: "일반회원", id: "test1234", password: "test1234" },
+        { role: "관리자", id: "admin", password: "admin" },
+      ],
       detail: "/docs/project-Chukjero(FestaRoute).pdf",
       detailLabel: "PDF 상세 보기",
     },
