@@ -204,7 +204,7 @@ export default function Home() {
       </Section>
 
       <Section id="contact" eyebrow="Contact" title="Contact">
-        <div className="card rounded-[2rem] bg-slate-950 p-8 text-white sm:p-10">
+        <div className="card rounded-[2rem] bg-slate-950 p-8 text-black sm:p-10">
           <p className="max-w-2xl text-lg leading-9 text-slate-300">
             프로젝트와 코드에 대해 더 자세히 이야기할 수 있습니다.
           </p>
